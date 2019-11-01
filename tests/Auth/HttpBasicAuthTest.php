@@ -9,15 +9,15 @@ use Yiisoft\Yii\Web\Auth\HttpBasicAuth;
 
 class HttpBasicAuthTest extends AuthTest
 {
-    private const CorrectCredentials = ['user', 'password'];
+    private const CorrectCredentials = ['user', self::CorrectToken];
 
     /**
      * @test
      */
     public function shouldAuthenticateToken()
     {
-        $request = $this->getRequest('userToken');
-        $auth = new HttpBasicAuth($this->getIdentityRepositoryWithIdentity());
+        $request = $this->getRequest('userToken', self::CorrectToken);
+        $auth = new HttpBasicAuth($this->getIdentityRepository(self::CorrectToken));
 
         $this->assertSame($this->identity, $auth->authenticate($request));
     }
@@ -28,7 +28,7 @@ class HttpBasicAuthTest extends AuthTest
     public function shouldNotAuthenticateBadToken()
     {
         $request = $this->getRequest('userToken');
-        $auth = new HttpBasicAuth($this->getIdentityRepositoryWithoutIdentity());
+        $auth = new HttpBasicAuth($this->getIdentityRepository());
 
         $this->assertNull($auth->authenticate($request));
     }
@@ -39,7 +39,7 @@ class HttpBasicAuthTest extends AuthTest
     public function shouldNotAuthenticateWithoutUserOrToken()
     {
         $request = $this->getRequest();
-        $auth = new HttpBasicAuth($this->getIdentityRepositoryWithoutIdentity());
+        $auth = new HttpBasicAuth($this->getIdentityRepository());
 
         $this->assertNull($auth->authenticate($request));
     }
